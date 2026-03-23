@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fitnexa – Find Your Perfect Trainer</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+    .feature-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;text-align:center;transition:var(--transition);}
+    .feature-card:hover{border-color:var(--primary);transform:translateY(-4px);}
+    .feature-icon{font-size:2.5rem;margin-bottom:1rem;}
+    .feature-title{font-size:1.2rem;margin-bottom:0.5rem;}
+    .feature-desc{color:var(--text-muted);font-size:0.9rem;}
+    .section-pad{padding:5rem 0;}
+    .cta-section{background:linear-gradient(135deg,rgba(0,200,150,0.1) 0%,rgba(255,107,53,0.05) 100%);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+    @media(max-width:768px){.features-grid{grid-template-columns:1fr;}}
+
+    /* User Stats Bar */
+    .user-stats-bar{background:var(--bg-card);border-bottom:1px solid var(--border);padding:1.2rem 0;display:none;}
+    .user-stats-bar.visible{display:block;}
+    .stats-row{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+    .ustat{display:flex;align-items:center;gap:0.75rem;background:var(--bg-card2);border:1px solid var(--border);border-radius:12px;padding:0.9rem 1.4rem;min-width:160px;transition:var(--transition);cursor:default;}
+    .ustat:hover{border-color:var(--primary);transform:translateY(-2px);}
+    .ustat-icon{font-size:1.6rem;}
+    .ustat-val{font-size:1.4rem;font-weight:700;color:var(--primary);line-height:1;}
+    .ustat-lbl{font-size:0.75rem;color:var(--text-muted);margin-top:0.15rem;}
+    .ustat.orange .ustat-val{color:#ff6b35;}
+    .ustat.yellow .ustat-val{color:var(--warning);}
+    .ustat.blue .ustat-val{color:#4fc3f7;}
+
+    /* Nearby section */
+    .nearby-section{padding:4rem 0;border-top:1px solid var(--border);}
+  </style>
+</head>
+<body>
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="index.html" class="navbar-brand">FIT<span>NEXA</span></a>
+  <ul class="navbar-nav" id="nav-links">
+    <li><a href="index.html" class="active">Home</a></li>
+    <li><a href="trainers.html">Find Trainers</a></li>
+    <li><a href="dashboard.html">Dashboard</a></li>
+  </ul>
+  <div class="nav-user" id="nav-user"></div>
+</nav>
+
+<!-- USER STATS BAR (shown when logged in) -->
+<div class="user-stats-bar" id="user-stats-bar">
+  <div class="container">
+    <div class="stats-row">
+      <div class="ustat">
+        <div class="ustat-icon">📅</div>
+        <div><div class="ustat-val" id="us-bookings">—</div><div class="ustat-lbl">Total Bookings</div></div>
+      </div>
+      <div class="ustat orange">
+        <div class="ustat-icon">🏃</div>
+        <div><div class="ustat-val" id="us-active">—</div><div class="ustat-lbl">Active Sessions</div></div>
+      </div>
+      <div class="ustat yellow">
+        <div class="ustat-icon">⭐</div>
+        <div><div class="ustat-val" id="us-reviews">—</div><div class="ustat-lbl">Reviews Given</div></div>
+      </div>
+      <div class="ustat blue">
+        <div class="ustat-icon">📍</div>
+        <div><div class="ustat-val" id="us-nearby">—</div><div class="ustat-lbl">Nearby Trainers</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <h1 class="hero-title">
+      YOUR FITNESS<br><span style="color:var(--primary)">JOURNEY STARTS</span><br>HERE
+    </h1>
+    <p class="hero-subtitle">Connect with certified fitness professionals, book sessions, and transform your life.</p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+      <a href="trainers.html" class="btn btn-primary btn-lg">🔍 Find Trainers</a>
+      <a href="signup.html" class="btn btn-outline btn-lg">Join Free →</a>
+    </div>
+    <div style="margin-top:3rem;display:flex;gap:3rem;justify-content:center;flex-wrap:wrap;">
+      <div style="text-align:center"><div style="font-size:1.8rem;font-weight:700;color:var(--primary)">500+</div><div style="color:var(--text-muted);font-size:0.9rem">Certified Trainers</div></div>
+      <div style="text-align:center"><div style="font-size:1.8rem;font-weight:700;color:var(--primary)">10K+</div><div style="color:var(--text-muted);font-size:0.9rem">Happy Clients</div></div>
+      <div style="text-align:center"><div style="font-size:1.8rem;font-weight:700;color:var(--primary)">50+</div><div style="color:var(--text-muted);font-size:0.9rem">Cities</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section-pad">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:3rem">
+      <h2 class="section-title">Why <span>Fitnexa</span>?</h2>
+      <p class="section-subtitle">Everything you need to find the right trainer and crush your goals</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🔍</div>
+        <div class="feature-title">Smart Search</div>
+        <div class="feature-desc">Filter trainers by location, skills, experience, and budget to find your perfect match.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📅</div>
+        <div class="feature-title">Easy Booking</div>
+        <div class="feature-desc">Book sessions instantly. Trainers confirm, you show up. Simple as that.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⭐</div>
+        <div class="feature-title">Verified Reviews</div>
+        <div class="feature-desc">Read authentic reviews from real clients. Make informed decisions every time.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🏆</div>
+        <div class="feature-title">Certified Pros</div>
+        <div class="feature-desc">All trainers showcase their certifications, experience and specializations.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💬</div>
+        <div class="feature-title">Direct Chat</div>
+        <div class="feature-desc">Communicate with trainers directly before and after sessions.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <div class="feature-title">Progress Dashboard</div>
+        <div class="feature-desc">Track your bookings, sessions, and fitness journey all in one place.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ALL TRAINERS -->
+<section class="section-pad" style="background:var(--bg-card);border-top:1px solid var(--border);">
+  <div class="container">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem">
+      <div>
+        <h2 class="section-title" id="trainers-section-title">All <span>Trainers</span></h2>
+        <p class="section-subtitle" style="margin:0" id="trainers-section-sub">Certified fitness professionals on our platform</p>
+      </div>
+      <a href="trainers.html" class="btn btn-outline">Browse & Book →</a>
+    </div>
+    <div id="all-trainers" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;">
+      <div class="spinner"></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section-pad cta-section">
+  <div class="container" style="text-align:center">
+    <h2 style="font-family:'Bebas Neue',sans-serif;font-size:3rem;margin-bottom:1rem">
+      READY TO <span style="color:var(--primary)">TRANSFORM</span>?
+    </h2>
+    <p style="color:var(--text-muted);margin-bottom:2rem;max-width:500px;margin-left:auto;margin-right:auto;">
+      Join thousands of people who found their perfect trainer on Fitnexa. Start your journey today.
+    </p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+      <a href="signup.html" class="btn btn-primary btn-lg">Get Started Free</a>
+      <a href="signup.html?role=TRAINER" class="btn btn-secondary btn-lg">Join as Trainer</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer style="background:var(--secondary);border-top:1px solid var(--border);padding:2rem;text-align:center;">
+  <div style="color:var(--primary);font-family:'Bebas Neue',sans-serif;font-size:1.5rem;margin-bottom:0.5rem">FITNEXA</div>
+  <p style="color:var(--text-muted);font-size:0.85rem">© 2024 Fitnexa. Connecting fitness professionals with clients.</p>
+</footer>
+
+<script src="js/api.js"></script>
+<script>
+  function trainerCardHTML(t) {
+    return `
+      <div class="trainer-card" onclick="window.location.href='trainers.html'" style="cursor:pointer">
+        <div class="trainer-card-header">
+          <div class="trainer-avatar">${getInitials(t.user?.name||'T')}</div>
+          <div>
+            <div class="trainer-name">${t.user?.name||'Trainer'}</div>
+            <div class="trainer-specialization">${t.specialization||'Fitness Pro'}</div>
+            <div style="color:var(--text-muted);font-size:0.8rem">📍 ${t.location||'N/A'}</div>
+          </div>
+        </div>
+        <div class="trainer-card-body">
+          <div class="skills-tags">${(t.skills||'').split(',').slice(0,3).map(s=>`<span class="skill-tag">${s.trim()}</span>`).join('')}</div>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="rating-display"><span class="stars">${renderStars(t.averageRating||0)}</span><span class="rating-number">${(t.averageRating||0).toFixed(1)}</span></div>
+            <div class="price-display">₹${t.hourlyRate||'N/A'}<small>/hr</small></div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  (async () => {
+    const el = document.getElementById('all-trainers');
+    const user = Auth.getUser();
+
+    try {
+      let trainers = [];
+
+      // If logged in and has location, show nearby trainers first
+      if (user && user.role !== 'ADMIN' && user.location) {
+        document.getElementById('trainers-section-title').innerHTML = 'Trainers <span>Near You</span>';
+        document.getElementById('trainers-section-sub').innerHTML =
+          `Based on your location: <strong style="color:var(--primary)">${user.location}</strong>`;
+        const nRes = await TrainerAPI.search({ location: user.location });
+        trainers = nRes.data || [];
+        // If no nearby, fall back to all
+        if (!trainers.length) {
+          document.getElementById('trainers-section-title').innerHTML = 'All <span>Trainers</span>';
+          document.getElementById('trainers-section-sub').textContent = 'No trainers found near you — showing all';
+          const aRes = await TrainerAPI.getAll();
+          trainers = aRes.data || [];
+        }
+      } else {
+        const aRes = await TrainerAPI.getAll();
+        trainers = aRes.data || [];
+      }
+
+      if (!trainers.length) {
+        el.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="icon">🏋️</div><h3>No trainers yet</h3><p>Be the first to join as a trainer!</p></div>`;
+        return;
+      }
+      el.innerHTML = trainers.map(t => trainerCardHTML(t)).join('');
+    } catch (e) {
+      el.innerHTML = `<p style="color:var(--text-muted);grid-column:1/-1">Could not load trainers. Is the backend running?</p>`;
+    }
+  })();
+
+  // Load user stats if logged in
+  (async () => {
+    const user = Auth.getUser();
+    if (!user || user.role === 'ADMIN') return;
+
+    document.getElementById('user-stats-bar').classList.add('visible');
+
+    try {
+      const res = await BookingAPI.getMyBookings();
+      const bookings = res.data || [];
+      document.getElementById('us-bookings').textContent = bookings.length;
+      document.getElementById('us-active').textContent = bookings.filter(b => b.status === 'ACCEPTED').length;
+    } catch (_) {
+      document.getElementById('us-bookings').textContent = '0';
+      document.getElementById('us-active').textContent = '0';
+    }
+
+    try {
+      const tRes = await TrainerAPI.getAll();
+      const trainers = tRes.data || [];
+      let reviewCount = 0;
+      const allReviews = await Promise.all(trainers.map(t => ReviewAPI.getForTrainer(t.id).catch(() => ({ data: [] }))));
+      allReviews.forEach(r => (r.data || []).forEach(rv => { if (rv.user?.id === user.id) reviewCount++; }));
+      document.getElementById('us-reviews').textContent = reviewCount;
+    } catch (_) {
+      document.getElementById('us-reviews').textContent = '0';
+    }
+
+    try {
+      const nRes = await TrainerAPI.search({ location: user.location || '' });
+      document.getElementById('us-nearby').textContent = (nRes.data || []).length;
+    } catch (_) {
+      document.getElementById('us-nearby').textContent = '0';
+    }
+  })();
+</script>
+</body>
+</html>

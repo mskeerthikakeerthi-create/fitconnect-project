@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Find Trainers – Fitnexa</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .page-hero{background:linear-gradient(135deg,var(--secondary) 0%,#0a0a15 100%);padding:3rem 0;text-align:center;border-bottom:1px solid var(--border);}
+    .trainers-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.5rem;}
+    .trainer-card-footer{padding:1rem 1.5rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <a href="index.html" class="navbar-brand">FIT<span>NEXA</span></a>
+  <ul class="navbar-nav" id="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="trainers.html" class="active">Find Trainers</a></li>
+    <li><a href="dashboard.html">Dashboard</a></li>
+  </ul>
+  <div class="nav-user" id="nav-user"></div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <h1 class="hero-title" style="font-size:2.5rem;">Find Your <span style="color:var(--primary)">Perfect Trainer</span></h1>
+    <p style="color:var(--text-muted);max-width:500px;margin:0 auto;">Connect with certified fitness professionals near you</p>
+  </div>
+</div>
+
+<div class="page-content">
+  <div class="container">
+    <!-- SEARCH & FILTER BAR -->
+    <div class="search-bar">
+      <div class="form-group">
+        <label class="form-label">📍 Location</label>
+        <input type="text" id="filter-location" class="form-control" placeholder="e.g., Mumbai, Delhi">
+      </div>
+      <div class="form-group">
+        <label class="form-label">🏋️ Skill</label>
+        <input type="text" id="filter-skill" class="form-control" placeholder="e.g., Yoga, HIIT">
+      </div>
+      <div class="form-group">
+        <label class="form-label">💰 Max Rate (₹/hr)</label>
+        <input type="number" id="filter-rate" class="form-control" placeholder="e.g., 2000">
+      </div>
+      <div class="form-group">
+        <label class="form-label">📆 Min Experience</label>
+        <select id="filter-exp" class="form-control">
+          <option value="">Any</option>
+          <option value="1">1+ years</option>
+          <option value="3">3+ years</option>
+          <option value="5">5+ years</option>
+          <option value="10">10+ years</option>
+        </select>
+      </div>
+      <div style="padding-bottom:0.05rem">
+        <button class="btn btn-primary" onclick="searchTrainers()">🔍 Search</button>
+        <button class="btn btn-secondary" onclick="clearFilters()" style="margin-left:0.5rem">✕ Clear</button>
+      </div>
+    </div>
+
+    <div id="results-header" style="margin-bottom:1rem;color:var(--text-muted);font-size:0.9rem;"></div>
+    <div id="trainers-grid" class="trainers-grid"><div class="spinner"></div></div>
+  </div>
+</div>
+
+<!-- BOOKING MODAL -->
+<div class="modal-overlay" id="booking-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>📅 Book a Session</h2>
+      <button class="modal-close" onclick="closeModal('booking-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="booking-trainer-info" style="margin-bottom:1.5rem;padding:1rem;background:var(--bg-card2);border-radius:8px;"></div>
+      <div class="form-group">
+        <label class="form-label">Session Date</label>
+        <input type="date" id="book-date" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Preferred Time</label>
+        <input type="time" id="book-time" class="form-control">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Session Type</label>
+        <select id="book-type" class="form-control">
+          <option value="In-Person">In-Person</option>
+          <option value="Online">Online (Video Call)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes / Special Requests</label>
+        <textarea id="book-notes" class="form-control" rows="3" placeholder="Any specific goals or requirements..."></textarea>
+      </div>
+      <button class="btn btn-primary btn-block btn-lg" onclick="submitBooking()">Confirm Booking</button>
+    </div>
+  </div>
+</div>
+
+<!-- REVIEW MODAL -->
+<div class="modal-overlay" id="review-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>⭐ Write a Review</h2>
+      <button class="modal-close" onclick="closeModal('review-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="review-trainer-info" style="margin-bottom:1.5rem;padding:1rem;background:var(--bg-card2);border-radius:8px;"></div>
+      <div class="form-group">
+        <label class="form-label">Your Rating</label>
+        <div class="star-rating">
+          <input type="radio" id="s5" name="rating" value="5"><label for="s5">★</label>
+          <input type="radio" id="s4" name="rating" value="4"><label for="s4">★</label>
+          <input type="radio" id="s3" name="rating" value="3"><label for="s3">★</label>
+          <input type="radio" id="s2" name="rating" value="2"><label for="s2">★</label>
+          <input type="radio" id="s1" name="rating" value="1"><label for="s1">★</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Your Review</label>
+        <textarea id="review-comment" class="form-control" rows="4" placeholder="Share your experience..."></textarea>
+      </div>
+      <button class="btn btn-primary btn-block" onclick="submitReview()">Submit Review</button>
+    </div>
+  </div>
+</div>
+
+<!-- TRAINER DETAIL MODAL -->
+<div class="modal-overlay" id="detail-modal">
+  <div class="modal" style="max-width:640px">
+    <div class="modal-header">
+      <h2>Trainer Profile</h2>
+      <button class="modal-close" onclick="closeModal('detail-modal')">✕</button>
+    </div>
+    <div class="modal-body" id="detail-modal-body"></div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script>
+  let selectedTrainerId = null;
+
+  function trainerCardHTML(t) {
+    const skills = t.skills ? t.skills.split(',').map(s =>
+      `<span class="skill-tag">${s.trim()}</span>`).join('') : '';
+    const stars = renderStars(t.averageRating || 0);
+    return `
+      <div class="trainer-card" onclick="showTrainerDetail(${t.id})">
+        <div class="trainer-card-header">
+          <div class="trainer-avatar">${getInitials(t.user?.name || 'T')}</div>
+          <div>
+            <div class="trainer-name">${t.user?.name || 'Trainer'}</div>
+            <div class="trainer-specialization">${t.specialization || 'Fitness Professional'}</div>
+            <div style="color:var(--text-muted);font-size:0.8rem;margin-top:0.2rem">📍 ${t.location || 'Location not set'}</div>
+          </div>
+          ${t.isAvailable ? '<div class="trainer-available">✓ Available</div>' : ''}
+        </div>
+        <div class="trainer-card-body">
+          <div class="trainer-meta">
+            <div class="trainer-meta-item">🏆 <span>${t.experienceYears}</span> yrs exp</div>
+            <div class="trainer-meta-item">⭐ <span>${t.averageRating?.toFixed(1) || '0.0'}</span></div>
+            <div class="trainer-meta-item">👥 <span>${t.totalReviews || 0}</span> reviews</div>
+          </div>
+          <div class="skills-tags">${skills || '<span style="color:var(--text-muted);font-size:0.82rem">No skills listed</span>'}</div>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="rating-display">
+              <span class="stars">${stars}</span>
+              <span class="rating-number">${t.averageRating?.toFixed(1) || '0.0'}</span>
+            </div>
+            <div class="price-display">₹${t.hourlyRate || 'N/A'}<small>/hr</small></div>
+          </div>
+        </div>
+        <div class="trainer-card-footer">
+          <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();openBooking(${t.id},'${t.user?.name}')">📅 Book</button>
+          <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();openReview(${t.id},'${t.user?.name}')">⭐ Review</button>
+          <button class="btn btn-outline btn-sm" onclick="event.stopPropagation();showTrainerDetail(${t.id})">View Profile</button>
+        </div>
+      </div>`;
+  }
+
+  async function loadTrainers(params = {}) {
+    const grid = document.getElementById('trainers-grid');
+    const header = document.getElementById('results-header');
+    grid.innerHTML = '<div class="spinner"></div>';
+    try {
+      const res = await TrainerAPI.search(params);
+      const trainers = res.data || [];
+      header.textContent = `Found ${trainers.length} trainer${trainers.length !== 1 ? 's' : ''}`;
+      if (!trainers.length) {
+        grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="icon">🔍</div><h3>No trainers found</h3><p>Try different filters</p></div>`;
+        return;
+      }
+      grid.innerHTML = trainers.map(trainerCardHTML).join('');
+    } catch (err) {
+      grid.innerHTML = `<div class="alert alert-error">❌ ${err.message}</div>`;
+    }
+  }
+
+  function searchTrainers() {
+    loadTrainers({
+      location: document.getElementById('filter-location').value,
+      skill:    document.getElementById('filter-skill').value,
+      maxRate:  document.getElementById('filter-rate').value,
+      minExp:   document.getElementById('filter-exp').value,
+    });
+  }
+
+  function clearFilters() {
+    ['filter-location','filter-skill','filter-rate','filter-exp'].forEach(id =>
+      document.getElementById(id).value = '');
+    loadTrainers();
+  }
+
+  function openBooking(trainerId, name) {
+    if (!Auth.isLoggedIn()) { window.location.href = 'login.html'; return; }
+    selectedTrainerId = trainerId;
+    document.getElementById('booking-trainer-info').innerHTML =
+      `<strong>🏋️ ${name}</strong><br><span style="color:var(--text-muted);font-size:0.85rem">Fill in session details below</span>`;
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('book-date').min = today;
+    openModal('booking-modal');
+  }
+
+  async function submitBooking() {
+    const date = document.getElementById('book-date').value;
+    if (!date) { showToast('Please select a date', 'error'); return; }
+    try {
+      await BookingAPI.create({
+        trainerId: selectedTrainerId,
+        sessionDate: date,
+        sessionTime: document.getElementById('book-time').value,
+        sessionType: document.getElementById('book-type').value,
+        notes: document.getElementById('book-notes').value,
+      });
+      showToast('🎉 Booking request sent! Check your dashboard.', 'success');
+      closeModal('booking-modal');
+    } catch (err) {
+      showToast(err.message, 'error');
+    }
+  }
+
+  function openReview(trainerId, name) {
+    if (!Auth.isLoggedIn()) { window.location.href = 'login.html'; return; }
+    selectedTrainerId = trainerId;
+    document.getElementById('review-trainer-info').innerHTML =
+      `<strong>⭐ Review for ${name}</strong>`;
+    openModal('review-modal');
+  }
+
+  async function submitReview() {
+    const rating = document.querySelector('input[name="rating"]:checked')?.value;
+    if (!rating) { showToast('Please select a rating', 'error'); return; }
+    try {
+      await ReviewAPI.create({
+        trainerId: selectedTrainerId,
+        rating: parseInt(rating),
+        comment: document.getElementById('review-comment').value,
+      });
+      showToast('✅ Review submitted!', 'success');
+      closeModal('review-modal');
+      loadTrainers();
+    } catch (err) {
+      showToast(err.message, 'error');
+    }
+  }
+
+  async function showTrainerDetail(id) {
+    openModal('detail-modal');
+    const body = document.getElementById('detail-modal-body');
+    body.innerHTML = '<div class="spinner"></div>';
+    try {
+      const [tRes, rRes] = await Promise.all([
+        TrainerAPI.getById(id),
+        ReviewAPI.getForTrainer(id)
+      ]);
+      const t = tRes.data;
+      const reviews = rRes.data || [];
+      const skills = t.skills ? t.skills.split(',').map(s =>
+        `<span class="skill-tag">${s.trim()}</span>`).join('') : '';
+      const certs = t.certifications ? t.certifications.split(',').map(c =>
+        `<span class="skill-tag" style="background:rgba(255,193,7,0.1);color:var(--warning);border-color:rgba(255,193,7,0.2)">${c.trim()}</span>`).join('') : '';
+      const reviewsHTML = reviews.length ? reviews.map(r => `
+        <div style="padding:0.75rem;background:var(--bg-card2);border-radius:8px;margin-bottom:0.5rem">
+          <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem">
+            <strong>${r.user?.name || 'Anonymous'}</strong>
+            <span class="stars">${renderStars(r.rating)}</span>
+          </div>
+          <p style="font-size:0.88rem;color:var(--text-muted)">${r.comment || 'No comment'}</p>
+        </div>`).join('') : '<p style="color:var(--text-muted)">No reviews yet. Be the first!</p>';
+
+      body.innerHTML = `
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem">
+          <div class="trainer-avatar" style="width:72px;height:72px;font-size:1.5rem">${getInitials(t.user?.name||'T')}</div>
+          <div>
+            <h3 style="font-size:1.4rem">${t.user?.name}</h3>
+            <div style="color:var(--primary)">${t.specialization || 'Fitness Professional'}</div>
+            <div style="color:var(--text-muted);font-size:0.85rem">📍 ${t.location || 'N/A'}</div>
+          </div>
+        </div>
+        <div class="grid grid-2" style="margin-bottom:1.5rem">
+          <div style="background:var(--bg-card2);padding:0.75rem;border-radius:8px;text-align:center">
+            <div style="font-size:1.5rem;font-weight:700">${t.experienceYears}</div>
+            <div style="color:var(--text-muted);font-size:0.8rem">Years Experience</div>
+          </div>
+          <div style="background:var(--bg-card2);padding:0.75rem;border-radius:8px;text-align:center">
+            <div style="font-size:1.5rem;font-weight:700;color:var(--warning)">${t.averageRating?.toFixed(1)||'0.0'}</div>
+            <div style="color:var(--text-muted);font-size:0.8rem">Average Rating</div>
+          </div>
+        </div>
+        <div style="margin-bottom:1.2rem"><h4 style="margin-bottom:0.5rem">Skills</h4><div class="skills-tags">${skills||'None listed'}</div></div>
+        <div style="margin-bottom:1.2rem"><h4 style="margin-bottom:0.5rem">Certifications</h4><div class="skills-tags">${certs||'None listed'}</div></div>
+        <div style="margin-bottom:1.5rem"><div style="display:flex;justify-content:space-between"><strong>Rate:</strong><span class="price-display">₹${t.hourlyRate||'N/A'}<small>/hr</small></span></div></div>
+        <div style="display:flex;gap:0.75rem;margin-bottom:1.5rem">
+          <button class="btn btn-primary btn-block" onclick="closeModal('detail-modal');openBooking(${t.id},'${t.user?.name}')">📅 Book Session</button>
+          <button class="btn btn-outline btn-block" onclick="closeModal('detail-modal');openReview(${t.id},'${t.user?.name}')">⭐ Review</button>
+        </div>
+        <h4 style="margin-bottom:0.75rem">Reviews (${reviews.length})</h4>
+        ${reviewsHTML}`;
+    } catch (err) {
+      body.innerHTML = `<div class="alert alert-error">❌ ${err.message}</div>`;
+    }
+  }
+
+  function openModal(id) { document.getElementById(id).classList.add('active'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+  // Close modal on backdrop click
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('active'); });
+  });
+
+  loadTrainers();
+</script>
+</body>
+</html>

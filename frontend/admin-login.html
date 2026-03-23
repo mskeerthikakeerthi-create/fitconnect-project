@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login – Fitnexa</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { background: #0a0a15; }
+    .admin-login { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+    .admin-card { width: 100%; max-width: 420px; background: #0d1b2a; border: 1px solid rgba(255,107,53,0.3); border-radius: 16px; padding: 2.5rem; }
+    .admin-badge { display: inline-block; background: rgba(255,107,53,0.15); color: #ff6b35; border: 1px solid rgba(255,107,53,0.3); border-radius: 20px; padding: 0.3rem 1rem; font-size: 0.78rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 1.5rem; }
+  </style>
+</head>
+<body>
+<div class="admin-login">
+  <div class="admin-card">
+    <div style="text-align:center; margin-bottom:1.5rem;">
+      <div class="admin-badge">🔐 Admin Portal</div>
+      <h1 style="font-family:'Bebas Neue',sans-serif; font-size:2.5rem; color:#ff6b35;">FITNEXA</h1>
+      <p style="color:var(--text-muted); font-size:0.9rem;">Administrator Access Only</p>
+    </div>
+
+    <div id="alert-area"></div>
+
+    <form id="admin-login-form">
+      <div class="form-group">
+        <label class="form-label">Admin Email</label>
+        <input type="email" id="email" class="form-control" placeholder="admin@fitconnect.com" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" id="password" class="form-control" placeholder="Admin password" required>
+      </div>
+      <button type="submit" class="btn btn-block btn-lg" id="login-btn"
+        style="background:#ff6b35; color:white; border:none; border-radius:8px; padding:0.9rem; font-weight:600; cursor:pointer; width:100%;">
+        Login as Admin
+      </button>
+    </form>
+
+    <div style="text-align:center; margin-top:1.5rem;">
+      <a href="index.html" style="color:var(--text-muted); font-size:0.85rem;">← Back to Fitnexa</a>
+    </div>
+
+    <div style="margin-top:1.5rem; padding:1rem; background:rgba(255,107,53,0.05); border:1px solid rgba(255,107,53,0.15); border-radius:8px; font-size:0.82rem; color:var(--text-muted);">
+      <strong style="color:#ff6b35;">Demo Credentials:</strong><br>
+      Email: admin@fitconnect.com<br>
+      Password: password
+    </div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script>
+  if (Auth.isLoggedIn() && Auth.getUser()?.role === 'ADMIN') {
+    window.location.href = 'admin.html';
+  }
+
+  document.getElementById('admin-login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('login-btn');
+    btn.disabled = true;
+    btn.textContent = 'Logging in...';
+
+    try {
+      const res = await AuthAPI.login({
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value
+      });
+
+      const { token, userId, name, email, role } = res.data;
+
+      if (role !== 'ADMIN') {
+        throw new Error('Access denied. Admin credentials required.');
+      }
+
+      Auth.setSession(token, { id: userId, name, email, role });
+      showToast('Welcome, Admin! 🔐', 'success');
+      setTimeout(() => window.location.href = 'admin.html', 1000);
+
+    } catch (err) {
+      document.getElementById('alert-area').innerHTML =
+        `<div class="alert alert-error">❌ ${err.message}</div>`;
+      btn.disabled = false;
+      btn.textContent = 'Login as Admin';
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login – Fitnexa</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { background: radial-gradient(ellipse at 30% 50%, rgba(0,200,150,0.07) 0%, transparent 60%), #0f0f1a; }
+    .auth-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+    .auth-card { width: 100%; max-width: 460px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 2.5rem; box-shadow: 0 24px 64px rgba(0,0,0,0.5); }
+    .auth-logo { text-align: center; margin-bottom: 2rem; }
+    .auth-logo h1 { font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; letter-spacing: 2px; }
+    .auth-logo p { color: var(--text-muted); font-size: 0.9rem; margin-top: 0.3rem; }
+    .pass-wrap { position: relative; }
+    .pass-wrap .form-control { padding-right: 3rem; }
+    .pass-toggle { position: absolute; right: 0.9rem; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 1.1rem; padding: 0.2rem; transition: color 0.2s; }
+    .pass-toggle:hover { color: var(--primary); }
+    .auth-switch { text-align: center; margin-top: 1.5rem; font-size: 0.9rem; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+<div class="auth-page">
+  <div class="auth-card">
+
+    <div class="auth-logo">
+      <h1><span style="color:var(--primary)">FIT</span><span style="color:var(--text)">NEXA</span></h1>
+      <p>Welcome back! Sign in to continue 💪</p>
+    </div>
+
+    <div id="alert-area"></div>
+
+    <form id="login-form" autocomplete="off">
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <div class="input-icon-wrap">
+          <span class="icon">✉️</span>
+          <input type="email" id="email" class="form-control" placeholder="you@example.com" required autocomplete="email">
+        </div>
+        <div class="form-error" id="email-error">Enter a valid email</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div class="pass-wrap">
+          <input type="password" id="password" class="form-control" placeholder="Your password" required autocomplete="current-password">
+          <button type="button" class="pass-toggle" onclick="togglePassword()">👁️</button>
+        </div>
+        <div class="form-error" id="password-error">Password is required</div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block btn-lg" id="login-btn">Login</button>
+    </form>
+
+    <div class="auth-switch">
+      Don't have an account? <a href="signup.html">Sign up free →</a>
+    </div>
+
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script>
+  if (Auth.isLoggedIn()) {
+    const r = Auth.getUser()?.role;
+    window.location.href = r === 'ADMIN' ? 'admin.html' : 'dashboard.html';
+  }
+
+  function togglePassword() {
+    const input = document.getElementById('password');
+    const btn = document.querySelector('.pass-toggle');
+    if (input.type === 'password') { input.type = 'text'; btn.textContent = '🙈'; }
+    else { input.type = 'password'; btn.textContent = '👁️'; }
+  }
+
+  document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const alertArea = document.getElementById('alert-area');
+
+    let valid = true;
+    const emailErr = document.getElementById('email-error');
+    const passErr = document.getElementById('password-error');
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      emailErr.classList.add('show'); valid = false;
+    } else emailErr.classList.remove('show');
+
+    if (!password) {
+      passErr.classList.add('show'); valid = false;
+    } else passErr.classList.remove('show');
+
+    if (!valid) return;
+
+    const btn = document.getElementById('login-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner" style="width:18px;height:18px;margin:0;border-width:2px;"></span> Logging in...';
+
+    try {
+      const res = await AuthAPI.login({ email, password });
+      const { token, userId, name, email: userEmail, role } = res.data;
+
+      Auth.setSession(token, { id: userId, name, email: userEmail, role });
+      showToast(`Welcome back, ${name}! 🎉`, 'success');
+
+      setTimeout(() => {
+        window.location.href = role === 'ADMIN' ? 'admin.html' : 'dashboard.html';
+      }, 1000);
+
+    } catch (err) {
+      alertArea.innerHTML = `<div class="alert alert-error">❌ ${err.message}</div>`;
+      btn.disabled = false;
+      btn.textContent = 'Login';
+    }
+  });
+</script>
+</body>
+</html>

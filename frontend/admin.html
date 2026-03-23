@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard – Fitnexa</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { background: #0a0a15; }
+    .admin-layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+    .admin-sidebar { background: #0d1b2a; border-right: 1px solid rgba(255,107,53,0.2); padding: 1.5rem; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+    .admin-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: #ff6b35; margin-bottom: 0.3rem; }
+    .admin-badge { font-size: 0.72rem; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 2rem; display: block; }
+    .admin-nav a { display: flex; align-items: center; gap: 0.75rem; padding: 0.7rem 1rem; border-radius: 8px; color: var(--text-muted); font-size: 0.9rem; font-weight: 500; margin-bottom: 0.25rem; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+    .admin-nav a:hover, .admin-nav a.active { background: rgba(255,107,53,0.1); color: #ff6b35; }
+    .admin-main { padding: 2rem; overflow-y: auto; }
+    .admin-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; }
+    .stat-card-admin { background: #0d1b2a; border: 1px solid rgba(255,107,53,0.15); border-radius: 12px; padding: 1.5rem; }
+    .stat-val { font-size: 2.2rem; font-weight: 700; color: #ff6b35; }
+    .stat-lbl { color: var(--text-muted); font-size: 0.85rem; margin-top: 0.3rem; }
+    .admin-table { width: 100%; border-collapse: collapse; }
+    .admin-table th { background: rgba(255,107,53,0.08); color: #ff6b35; padding: 0.75rem 1rem; text-align: left; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 1px; }
+    .admin-table td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); font-size: 0.88rem; color: var(--text); }
+    .admin-table tr:hover td { background: rgba(255,107,53,0.03); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .role-badge { padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+    .role-user { background: rgba(0,200,150,0.1); color: var(--primary); }
+    .role-trainer { background: rgba(255,193,7,0.1); color: var(--warning); }
+    .role-admin { background: rgba(255,107,53,0.1); color: #ff6b35; }
+    @media(max-width:768px){ .admin-layout{grid-template-columns:1fr;} .admin-sidebar{height:auto;position:static;} }
+  </style>
+</head>
+<body>
+<div class="admin-layout">
+  <!-- SIDEBAR -->
+  <aside class="admin-sidebar">
+    <div class="admin-logo">FITNEXA</div>
+    <span class="admin-badge">Admin Panel</span>
+    <nav class="admin-nav">
+      <a onclick="showTab('overview')" class="active" id="nav-overview">📊 Overview</a>
+      <a onclick="showTab('users')" id="nav-users">👥 Users</a>
+      <a onclick="showTab('trainers')" id="nav-trainers">🏋️ Trainers</a>
+      <a onclick="showTab('bookings')" id="nav-bookings">📅 Bookings</a>
+      <a href="index.html" style="margin-top:2rem; border-top:1px solid var(--border); padding-top:1rem;">🏠 Back to Site</a>
+      <a onclick="adminLogout()">🚪 Logout</a>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="admin-main">
+    <div class="admin-header">
+      <div>
+        <h1 style="font-family:'Bebas Neue',sans-serif; font-size:2rem; color:#ff6b35;">Admin Dashboard</h1>
+        <p style="color:var(--text-muted); font-size:0.85rem;">Welcome back, <span id="admin-name">Admin</span></p>
+      </div>
+    </div>
+
+    <!-- OVERVIEW TAB -->
+    <div id="tab-overview" class="tab-content active">
+      <div class="grid grid-4" style="margin-bottom:2rem;" id="stats-grid">
+        <div class="stat-card-admin"><div class="stat-val" id="stat-users">-</div><div class="stat-lbl">Total Users</div></div>
+        <div class="stat-card-admin"><div class="stat-val" id="stat-trainers">-</div><div class="stat-lbl">Total Trainers</div></div>
+        <div class="stat-card-admin"><div class="stat-val" id="stat-bookings">-</div><div class="stat-lbl">Total Bookings</div></div>
+        <div class="stat-card-admin"><div class="stat-val" id="stat-pending">-</div><div class="stat-lbl">Pending Bookings</div></div>
+      </div>
+      <div style="background:#0d1b2a; border:1px solid rgba(255,107,53,0.15); border-radius:12px; padding:1.5rem;">
+        <h3 style="margin-bottom:1rem; color:#ff6b35;">Quick Actions</h3>
+        <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="showTab('users')">👥 Manage Users</button>
+          <button class="btn btn-secondary" onclick="showTab('trainers')">🏋️ Manage Trainers</button>
+          <button class="btn btn-outline" onclick="showTab('bookings')">📅 View Bookings</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- USERS TAB -->
+    <div id="tab-users" class="tab-content">
+      <h2 style="color:#ff6b35; margin-bottom:1.5rem;">All Users</h2>
+      <div style="background:#0d1b2a; border:1px solid rgba(255,107,53,0.15); border-radius:12px; overflow:hidden;">
+        <div id="users-table"><div class="spinner" style="margin:2rem auto;"></div></div>
+      </div>
+    </div>
+
+    <!-- TRAINERS TAB -->
+    <div id="tab-trainers" class="tab-content">
+      <h2 style="color:#ff6b35; margin-bottom:1.5rem;">All Trainers</h2>
+      <div style="background:#0d1b2a; border:1px solid rgba(255,107,53,0.15); border-radius:12px; overflow:hidden;">
+        <div id="trainers-table"><div class="spinner" style="margin:2rem auto;"></div></div>
+      </div>
+    </div>
+
+    <!-- BOOKINGS TAB -->
+    <div id="tab-bookings" class="tab-content">
+      <h2 style="color:#ff6b35; margin-bottom:1.5rem;">All Bookings</h2>
+      <div style="background:#0d1b2a; border:1px solid rgba(255,107,53,0.15); border-radius:12px; overflow:hidden;">
+        <div id="bookings-table"><div class="spinner" style="margin:2rem auto;"></div></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="js/api.js"></script>
+<script>
+  // Auth guard
+  const user = Auth.getUser();
+  if (!user || user.role !== 'ADMIN') {
+    window.location.href = 'admin-login.html';
+  }
+  document.getElementById('admin-name').textContent = user?.name || 'Admin';
+
+  function showTab(tab) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.admin-nav a').forEach(a => a.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    document.getElementById('nav-' + tab).classList.add('active');
+    if (tab === 'users') loadUsers();
+    if (tab === 'trainers') loadTrainers();
+    if (tab === 'bookings') loadBookings();
+  }
+
+  function adminLogout() {
+    Auth.clearSession();
+    window.location.href = 'admin-login.html';
+  }
+
+  // Load stats
+  async function loadStats() {
+    try {
+      const res = await request('GET', '/admin/stats');
+      const s = res.data;
+      document.getElementById('stat-users').textContent = s.totalUsers;
+      document.getElementById('stat-trainers').textContent = s.totalTrainers;
+      document.getElementById('stat-bookings').textContent = s.totalBookings;
+      document.getElementById('stat-pending').textContent = s.pendingBookings;
+    } catch(e) { console.error(e); }
+  }
+
+  async function loadUsers() {
+    const el = document.getElementById('users-table');
+    try {
+      const res = await request('GET', '/admin/users');
+      const users = res.data || [];
+      el.innerHTML = `<table class="admin-table">
+        <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Role</th><th>Location</th><th>Joined</th><th>Action</th></tr></thead>
+        <tbody>${users.map(u => `
+          <tr>
+            <td>${u.id}</td>
+            <td><strong>${u.name}</strong></td>
+            <td>${u.email}</td>
+            <td><span class="role-badge role-${u.role.toLowerCase()}">${u.role}</span></td>
+            <td>${u.location || '-'}</td>
+            <td>${u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '-'}</td>
+            <td>${u.role !== 'ADMIN' ? `<button class="btn btn-danger btn-sm" onclick="deleteUser(${u.id},'${u.name}')">Delete</button>` : '<span style="color:var(--text-muted)">Protected</span>'}</td>
+          </tr>`).join('')}
+        </tbody></table>`;
+    } catch(e) { el.innerHTML = `<div class="alert alert-error" style="margin:1rem">❌ ${e.message}</div>`; }
+  }
+
+  async function loadTrainers() {
+    const el = document.getElementById('trainers-table');
+    try {
+      const res = await request('GET', '/admin/trainers');
+      const trainers = res.data || [];
+      el.innerHTML = `<table class="admin-table">
+        <thead><tr><th>#</th><th>Name</th><th>Specialization</th><th>Location</th><th>Rate (₹/hr)</th><th>Rating</th><th>Experience</th><th>Action</th></tr></thead>
+        <tbody>${trainers.map(t => `
+          <tr>
+            <td>${t.id}</td>
+            <td><strong>${t.user?.name || '-'}</strong><br><span style="color:var(--text-muted);font-size:0.78rem">${t.user?.email || ''}</span></td>
+            <td>${t.specialization || '-'}</td>
+            <td>📍 ${t.location || '-'}</td>
+            <td>₹${t.hourlyRate || '-'}</td>
+            <td>⭐ ${t.averageRating?.toFixed(1) || '0.0'} (${t.totalReviews || 0})</td>
+            <td>${t.experienceYears} yrs</td>
+            <td><button class="btn btn-danger btn-sm" onclick="deleteTrainer(${t.id},'${t.user?.name}')">Delete</button></td>
+          </tr>`).join('')}
+        </tbody></table>`;
+    } catch(e) { el.innerHTML = `<div class="alert alert-error" style="margin:1rem">❌ ${e.message}</div>`; }
+  }
+
+  async function loadBookings() {
+    const el = document.getElementById('bookings-table');
+    try {
+      const res = await request('GET', '/admin/bookings');
+      const bookings = res.data || [];
+      const statusColors = { PENDING:'badge-warning', ACCEPTED:'badge-success', REJECTED:'badge-danger', COMPLETED:'badge-info', CANCELLED:'badge-danger' };
+      el.innerHTML = `<table class="admin-table">
+        <thead><tr><th>#</th><th>Client</th><th>Trainer</th><th>Date</th><th>Type</th><th>Status</th></tr></thead>
+        <tbody>${bookings.map(b => `
+          <tr>
+            <td>${b.id}</td>
+            <td>${b.user?.name || '-'}</td>
+            <td>${b.trainer?.user?.name || '-'}</td>
+            <td>${b.sessionDate || '-'} ${b.sessionTime || ''}</td>
+            <td>${b.sessionType || '-'}</td>
+            <td><span class="badge ${statusColors[b.status] || 'badge-info'}">${b.status}</span></td>
+          </tr>`).join('')}
+        </tbody></table>`;
+    } catch(e) { el.innerHTML = `<div class="alert alert-error" style="margin:1rem">❌ ${e.message}</div>`; }
+  }
+
+  async function deleteUser(id, name) {
+    if (!confirm(`Delete user "${name}"? This cannot be undone.`)) return;
+    try {
+      await request('DELETE', `/admin/users/${id}`);
+      showToast('User deleted', 'success');
+      loadUsers(); loadStats();
+    } catch(e) { showToast(e.message, 'error'); }
+  }
+
+  async function deleteTrainer(id, name) {
+    if (!confirm(`Delete trainer "${name}"? This cannot be undone.`)) return;
+    try {
+      await request('DELETE', `/admin/trainers/${id}`);
+      showToast('Trainer deleted', 'success');
+      loadTrainers(); loadStats();
+    } catch(e) { showToast(e.message, 'error'); }
+  }
+
+  // Initial load
+  loadStats();
+</script>
+</body>
+</html>

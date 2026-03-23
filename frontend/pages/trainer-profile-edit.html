@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trainer Profile – Fitnexa</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .profile-page{max-width:720px;margin:0 auto;padding:2rem 1.5rem;}
+    .profile-header{background:linear-gradient(135deg,var(--secondary),#0d1b2a);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;margin-bottom:2rem;display:flex;align-items:center;gap:1.5rem;}
+    .profile-avatar-lg{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:700;color:white;border:3px solid rgba(0,200,150,0.4);flex-shrink:0;}
+    .skills-input-container{display:flex;flex-wrap:wrap;gap:0.4rem;padding:0.5rem;background:var(--bg-card2);border:1.5px solid var(--border);border-radius:8px;min-height:42px;cursor:text;}
+    .skill-chip{background:rgba(0,200,150,0.15);color:var(--primary);border:1px solid rgba(0,200,150,0.3);padding:0.2rem 0.6rem;border-radius:16px;font-size:0.82rem;display:flex;align-items:center;gap:0.3rem;}
+    .skill-chip button{background:none;border:none;color:var(--primary);cursor:pointer;font-size:0.8rem;padding:0;}
+    .skills-text-input{background:none;border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.95rem;min-width:120px;flex:1;}
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <a href="../index.html" class="navbar-brand">FIT<span>NEXA</span></a>
+  <ul class="navbar-nav">
+    <li><a href="../trainers.html">Find Trainers</a></li>
+    <li><a href="../dashboard.html">Dashboard</a></li>
+  </ul>
+  <div class="nav-user" id="nav-user"></div>
+</nav>
+
+<div class="profile-page">
+  <div class="profile-header">
+    <div class="profile-avatar-lg" id="profile-avatar">?</div>
+    <div>
+      <h2 id="profile-name" style="font-size:1.5rem">Loading...</h2>
+      <div style="color:var(--primary);font-size:0.85rem;margin-top:0.2rem" id="profile-role">TRAINER</div>
+      <div style="color:var(--text-muted);font-size:0.85rem" id="profile-location"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 style="font-size:1.5rem;margin-bottom:1.5rem">⚙️ Trainer <span style="color:var(--primary)">Profile</span></h2>
+    <div id="alert-area"></div>
+
+    <form id="profile-form">
+      <div class="grid grid-2">
+        <div class="form-group">
+          <label class="form-label">Experience (Years)</label>
+          <input type="number" id="experienceYears" class="form-control" placeholder="e.g., 5" min="0" max="50">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Hourly Rate (₹)</label>
+          <input type="number" id="hourlyRate" class="form-control" placeholder="e.g., 1500" min="0">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Location</label>
+        <input type="text" id="location" class="form-control" placeholder="e.g., Mumbai, Maharashtra">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Specialization</label>
+        <select id="specialization" class="form-control">
+          <option value="">Select...</option>
+          <option value="Weight Loss">Weight Loss</option>
+          <option value="Muscle Gain">Muscle Gain</option>
+          <option value="Yoga & Mindfulness">Yoga & Mindfulness</option>
+          <option value="HIIT & Cardio">HIIT & Cardio</option>
+          <option value="Strength Training">Strength Training</option>
+          <option value="Rehabilitation">Rehabilitation</option>
+          <option value="Sports Performance">Sports Performance</option>
+          <option value="Nutrition Coaching">Nutrition Coaching</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Skills (press Enter or comma to add)</label>
+        <div class="skills-input-container" id="skills-container" onclick="document.getElementById('skill-input').focus()">
+          <input type="text" id="skill-input" class="skills-text-input" placeholder="e.g. Yoga, HIIT...">
+        </div>
+        <input type="hidden" id="skills">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Certifications (press Enter or comma to add)</label>
+        <div class="skills-input-container" id="certs-container" onclick="document.getElementById('cert-input').focus()">
+          <input type="text" id="cert-input" class="skills-text-input" placeholder="e.g. NASM CPT, ACE...">
+        </div>
+        <input type="hidden" id="certifications">
+      </div>
+
+      <div class="form-group" style="display:flex;align-items:center;gap:0.75rem">
+        <input type="checkbox" id="isAvailable" style="width:18px;height:18px;accent-color:var(--primary)">
+        <label for="isAvailable" style="cursor:pointer;font-weight:500">Currently accepting new clients</label>
+      </div>
+
+      <div style="display:flex;gap:1rem;flex-wrap:wrap">
+        <button type="submit" class="btn btn-primary btn-lg" id="save-btn">💾 Save Profile</button>
+        <a href="../dashboard.html" class="btn btn-secondary btn-lg">← Dashboard</a>
+      </div>
+    </form>
+  </div>
+
+  <!-- Chat UI (Optional Feature) -->
+  <div class="card" style="margin-top:1.5rem">
+    <h3 style="margin-bottom:1rem">💬 Demo Chat</h3>
+    <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:1rem">Chat UI preview (connect to messaging backend)</p>
+    <div class="chat-container">
+      <div class="chat-messages" id="chat-messages">
+        <div class="chat-message received">👋 Hi! I saw your profile and I'm interested in weight loss training. Are you available on weekends?</div>
+        <div class="chat-message sent">Hello! Yes, I'm available on Saturday mornings. What's your current fitness level?</div>
+        <div class="chat-message received">I'm a beginner. I've never trained seriously before but I'm motivated!</div>
+      </div>
+      <div class="chat-input-area">
+        <input type="text" class="form-control" id="chat-input" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendMsg()">
+        <button class="btn btn-primary btn-sm" onclick="sendMsg()">Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../js/api.js"></script>
+<script>
+  if (!Auth.requireAuth()) throw new Error('Not auth');
+  const user = Auth.getUser();
+  if (user.role !== 'TRAINER') window.location.href = '../dashboard.html';
+
+  document.getElementById('profile-avatar').textContent = getInitials(user.name);
+  document.getElementById('profile-name').textContent = user.name;
+  document.getElementById('profile-location').textContent = user.location || 'Location not set';
+
+  let skillsList = [];
+  let certsList = [];
+  let isEditing = false;
+
+  function addChip(containerId, list, value) {
+    value = value.trim().replace(',', '');
+    if (!value || list.includes(value)) return;
+    list.push(value);
+    const chip = document.createElement('div');
+    chip.className = 'skill-chip';
+    chip.innerHTML = `${value} <button onclick="removeChip('${containerId}',${JSON.stringify(list)},'${value}',this.parentElement)">✕</button>`;
+    document.getElementById(containerId).insertBefore(chip, document.getElementById(containerId === 'skills-container' ? 'skill-input' : 'cert-input'));
+    syncHidden();
+  }
+
+  function removeChip(containerId, list, value, chip) {
+    const arr = containerId === 'skills-container' ? skillsList : certsList;
+    const idx = arr.indexOf(value);
+    if (idx > -1) arr.splice(idx, 1);
+    chip.remove();
+    syncHidden();
+  }
+
+  function syncHidden() {
+    document.getElementById('skills').value = skillsList.join(',');
+    document.getElementById('certifications').value = certsList.join(',');
+  }
+
+  ['skill-input', 'cert-input'].forEach(inputId => {
+    document.getElementById(inputId).addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ',') {
+        e.preventDefault();
+        const isCert = inputId === 'cert-input';
+        addChip(isCert ? 'certs-container' : 'skills-container', isCert ? certsList : skillsList, e.target.value);
+        e.target.value = '';
+      }
+    });
+  });
+
+  // Load existing profile
+  (async () => {
+    try {
+      const res = await TrainerAPI.getMyProfile();
+      const t = res.data;
+      isEditing = true;
+      document.getElementById('experienceYears').value = t.experienceYears || '';
+      document.getElementById('hourlyRate').value = t.hourlyRate || '';
+      document.getElementById('location').value = t.location || '';
+      document.getElementById('specialization').value = t.specialization || '';
+      document.getElementById('isAvailable').checked = t.isAvailable !== false;
+      if (t.skills) t.skills.split(',').forEach(s => addChip('skills-container', skillsList, s));
+      if (t.certifications) t.certifications.split(',').forEach(c => addChip('certs-container', certsList, c));
+      document.getElementById('profile-location').textContent = t.location || user.location || '';
+    } catch (_) {
+      // No profile yet - create mode
+    }
+  })();
+
+  document.getElementById('profile-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('save-btn');
+    btn.disabled = true;
+    btn.textContent = 'Saving...';
+    const data = {
+      experienceYears: parseInt(document.getElementById('experienceYears').value) || 0,
+      hourlyRate: parseFloat(document.getElementById('hourlyRate').value) || null,
+      location: document.getElementById('location').value,
+      specialization: document.getElementById('specialization').value,
+      skills: skillsList.join(','),
+      certifications: certsList.join(','),
+      isAvailable: document.getElementById('isAvailable').checked,
+    };
+    try {
+      const fn = isEditing ? TrainerAPI.updateProfile : TrainerAPI.createProfile;
+      await fn(data);
+      isEditing = true;
+      showToast('✅ Profile saved!', 'success');
+    } catch (err) {
+      document.getElementById('alert-area').innerHTML = `<div class="alert alert-error">❌ ${err.message}</div>`;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '💾 Save Profile';
+    }
+  });
+
+  function sendMsg() {
+    const input = document.getElementById('chat-input');
+    const text = input.value.trim();
+    if (!text) return;
+    const msg = document.createElement('div');
+    msg.className = 'chat-message sent';
+    msg.textContent = text;
+    document.getElementById('chat-messages').appendChild(msg);
+    msg.scrollIntoView({ behavior: 'smooth' });
+    input.value = '';
+  }
+</script>
+</body>
+</html>
