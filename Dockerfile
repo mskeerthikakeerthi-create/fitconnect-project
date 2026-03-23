@@ -1,8 +1,8 @@
-FROM node:18
+FROM nginx:alpine
 
 WORKDIR /app
 
-COPY frontend/package*.json ./
+COPY frontend /usr/share/nginx/html
 
 RUN npm install
 
